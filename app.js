@@ -32,35 +32,32 @@ const searchWeather = (query) => {
     fetch(url + '&q=' + query)
         .then(response => {
             if (!response.ok) {
-                // Handle HTTP errors
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error('City not found');
             }
-            return response.json(); // Parse the response as JSON
+            return response.json();
         })
         .then(data => {
             if (data.cod == 200) {
-                // Update UI with the weather data if the response is successful
-                city.querySelector('figcaption').innerHTML = data.name; // Display city name
-                city.querySelector('img').src = `https://flagsapi.com/${data.sys.country}/shiny/32.png`; // Display country flag
-                temperature.querySelector('img').src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`; // Display weather icon
-                temperature.querySelector('span').innerText = Math.round(data.main.temp); // Display rounded temperature
-                description.innerText = data.weather[0].description; // Display weather description
+                // Update UI with weather data
+                city.querySelector('figcaption').innerHTML = data.name;
+                city.querySelector('img').src = `https://flagsapi.com/${data.sys.country}/shiny/32.png`;
+                temperature.querySelector('img').src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
+                temperature.querySelector('span').innerText = Math.round(data.main.temp);
+                description.innerText = data.weather[0].description;
 
-                clouds.innerText = data.clouds.all; // Display cloud percentage
-                humidity.innerText = data.main.humidity; // Display humidity percentage
-                pressure.innerText = data.main.pressure; // Display pressure value
-            } else {
-                // Handle API response errors
-                handleError(data.message);
+                clouds.innerText = data.clouds.all;
+                humidity.innerText = data.main.humidity;
+                pressure.innerText = data.main.pressure;
             }
-            valueSearch.value = ''; // Clear the input field
+            valueSearch.value = ''; // Clear input field after search
         })
         .catch(error => {
-            // Handle network or other fetch-related errors
             console.error('Error fetching weather data:', error);
-            handleError('Unable to fetch weather data.');
+            valueSearch.value = ''; // Clear input field
+            alert('City not found. Please enter a valid city name.');
         });
 };
+
 
 // Function to handle errors and display messages to the user
 const handleError = (message) => {
