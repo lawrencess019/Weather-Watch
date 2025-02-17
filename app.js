@@ -49,6 +49,9 @@ const searchWeather = (query) => {
                 clouds.innerText = data.clouds.all; // Display cloud percentage
                 humidity.innerText = data.main.humidity; // Display humidity percentage
                 pressure.innerText = data.main.pressure; // Display pressure value
+
+                // Change background based on cloud percentage
+                changeBackground(data.clouds.all);
             } else {
                 // Handle API response errors
                 handleError(data.message);
@@ -60,6 +63,23 @@ const searchWeather = (query) => {
             console.error('Error fetching weather data:', error);
             handleError('Unable to fetch weather data.');
         });
+};
+
+// Function to change the background based on cloud percentage
+const changeBackground = (cloudPercentage) => {
+    if (cloudPercentage <= 20) {
+        // Clear skies or very few clouds, set a bright or clear background
+        document.body.style.backgroundImage = 'url("https://wallpapers.com/images/featured/clear-sky-0ke2itg1dzw1rcj0.jpg")'; // Replace with your image or color
+    } else if (cloudPercentage <= 50) {
+        // Partly cloudy, set a moderate background
+        document.body.style.backgroundImage = 'url("https://www.wkbn.com/wp-content/uploads/sites/48/2021/03/clouds-cloudy-sky-spring-summer-fall-winter-weather-generic-8-1.jpg?w=1280")'; // Replace with your image or color
+    } else if (cloudPercentage <= 80) {
+        // Mostly cloudy, set a darker or overcast background
+        document.body.style.backgroundImage = 'url("https://media.gettyimages.com/id/475721245/video/storms-cloudy.jpg?s=640x640&k=20&c=wnH7U96LBjS2GXZj90tZuUE1qt4hlu6Cj8b-EIxIWns=")'; // Replace with your image or color
+    } else {
+        // Overcast, set a dark or stormy background
+        document.body.style.backgroundImage = 'url("https://www.rochesterfirst.com/wp-content/uploads/sites/66/2021/04/storm-466677_1920.jpg?w=900")'; // Replace with your image or color
+    }
 };
 
 // Function to handle errors and display messages to the user
@@ -80,3 +100,4 @@ const initApp = () => {
 
 // Ensure the app initializes only after the DOM content is fully loaded
 document.addEventListener('DOMContentLoaded', initApp);
+</script>
