@@ -1,4 +1,3 @@
-// OpenWeatherMap API Key
 let apiKey = '9cb3686b6b1ef98aeb19d9136a719ae3';
 // Base URL for the OpenWeatherMap API
 let url = 'https://api.openweathermap.org/data/2.5/weather?units=metric&appid=' + apiKey;
@@ -32,32 +31,55 @@ const searchWeather = (query) => {
     fetch(url + '&q=' + query)
         .then(response => {
             if (!response.ok) {
-                throw new Error('City not found');
+                // Handle HTTP errors
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.json();
+            return response.json(); // Parse the response as JSON
         })
         .then(data => {
             if (data.cod == 200) {
-                // Update UI with weather data
-                city.querySelector('figcaption').innerHTML = data.name;
-                city.querySelector('img').src = `https://flagsapi.com/${data.sys.country}/shiny/32.png`;
-                temperature.querySelector('img').src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
-                temperature.querySelector('span').innerText = Math.round(data.main.temp);
-                description.innerText = data.weather[0].description;
+                // Update UI with the weather data if the response is successful
+                city.querySelector('figcaption').innerHTML = data.name; // Display city name
+                city.querySelector('img').src = `https://flagsapi.com/${data.sys.country}/shiny/32.png`; // Display country flag
+                temperature.querySelector('img').src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`; // Display weather icon
+                temperature.querySelector('span').innerText = Math.round(data.main.temp); // Display rounded temperature
+                description.innerText = data.weather[0].description; // Display weather description
 
-                clouds.innerText = data.clouds.all;
-                humidity.innerText = data.main.humidity;
-                pressure.innerText = data.main.pressure;
+                clouds.innerText = data.clouds.all; // Display cloud percentage
+                humidity.innerText = data.main.humidity; // Display humidity percentage
+                pressure.innerText = data.main.pressure; // Display pressure value
+
+                // Change background based on cloud percentage
+                changeBackground(data.clouds.all);
+            } else {
+                // Handle API response errors
+                handleError(data.message);
             }
-            valueSearch.value = ''; // Clear input field after search
+            valueSearch.value = ''; // Clear the input field
         })
         .catch(error => {
+            // Handle network or other fetch-related errors
             console.error('Error fetching weather data:', error);
-            valueSearch.value = ''; // Clear input field
-            alert('City not found. Please enter a valid city name.');
+            handleError('Unable to fetch weather data.');
         });
 };
 
+// Function to change the background based on cloud percentage
+const changeBackground = (cloudPercentage) => {
+    if (cloudPercentage <= 20) {
+        // Clear skies or very few clouds, set a bright or clear background
+        document.body.style.backgroundImage = 'url("https://static.vecteezy.com/system/resources/previews/012/865/527/large_2x/clear-blue-sky-with-few-clouds-in-summer-this-clear-sky-is-usually-only-until-10-am-above-10-am-there-will-be-more-clouds-free-photo.jpg")'; // Replace with your image or color
+    } else if (cloudPercentage <= 50) {
+        // Partly cloudy, set a moderate background
+        document.body.style.backgroundImage = 'url("https://www.wkbn.com/wp-content/uploads/sites/48/2021/03/clouds-cloudy-sky-spring-summer-fall-winter-weather-generic-8-1.jpg?w=1280")'; // Replace with your image or color
+    } else if (cloudPercentage <= 80) {
+        // Mostly cloudy, set a darker or overcast background
+        document.body.style.backgroundImage = 'url("https://media.gettyimages.com/id/475721245/video/storms-cloudy.jpg?s=640x640&k=20&c=wnH7U96LBjS2GXZj90tZuUE1qt4hlu6Cj8b-EIxIWns=")'; // Replace with your image or color
+    } else {
+        // Overcast, set a dark or stormy background
+        document.body.style.backgroundImage = 'url("https://www.rochesterfirst.com/wp-content/uploads/sites/66/2021/04/storm-466677_1920.jpg?w=900")'; // Replace with your image or color
+    }
+};
 
 // Function to handle errors and display messages to the user
 const handleError = (message) => {
