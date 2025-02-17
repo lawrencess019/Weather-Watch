@@ -1,4 +1,3 @@
-// OpenWeatherMap API Key
 let apiKey = '9cb3686b6b1ef98aeb19d9136a719ae3';
 // Base URL for the OpenWeatherMap API
 let url = 'https://api.openweathermap.org/data/2.5/weather?units=metric&appid=' + apiKey;
@@ -69,7 +68,7 @@ const searchWeather = (query) => {
 const changeBackground = (cloudPercentage) => {
     if (cloudPercentage <= 20) {
         // Clear skies or very few clouds, set a bright or clear background
-        document.body.style.backgroundImage = 'url("https://wallpapers.com/images/featured/clear-sky-0ke2itg1dzw1rcj0.jpg")'; // Replace with your image or color
+        document.body.style.backgroundImage = 'url("https://static.vecteezy.com/system/resources/previews/012/865/527/large_2x/clear-blue-sky-with-few-clouds-in-summer-this-clear-sky-is-usually-only-until-10-am-above-10-am-there-will-be-more-clouds-free-photo.jpg")'; // Replace with your image or color
     } else if (cloudPercentage <= 50) {
         // Partly cloudy, set a moderate background
         document.body.style.backgroundImage = 'url("https://www.wkbn.com/wp-content/uploads/sites/48/2021/03/clouds-cloudy-sky-spring-summer-fall-winter-weather-generic-8-1.jpg?w=1280")'; // Replace with your image or color
@@ -100,4 +99,3 @@ const initApp = () => {
 
 // Ensure the app initializes only after the DOM content is fully loaded
 document.addEventListener('DOMContentLoaded', initApp);
-</script>
