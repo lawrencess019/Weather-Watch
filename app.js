@@ -1,6 +1,5 @@
-let apiKey = '9cb3686b6b1ef98aeb19d9136a719ae3';
 // Base URL for the OpenWeatherMap API
-let url = 'https://api.openweathermap.org/data/2.5/weather?units=metric&appid=' + apiKey;
+let url = 'https://api.openweathermap.org/data/2.5/weather?units=metric&appid=e42f67608ad442e05aab921ff75486c4';
 
 // DOM elements
 let city = document.querySelector('.name'); // Element to display city name and flag
@@ -31,13 +30,17 @@ const searchWeather = (query) => {
     fetch(url + '&q=' + query)
         .then(response => {
             if (!response.ok) {
-                // Handle HTTP errors
-                throw new Error(`HTTP error! status: ${response.status}`);
+                // Handle HTTP errors and check if city is not found
+                if (response.status === 404) {
+                    throw new Error('City not found. Try again.');
+                } else {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
             }
             return response.json(); // Parse the response as JSON
         })
         .then(data => {
-            if (data.cod == 200) {
+            if (data.cod === 200) {
                 // Update UI with the weather data if the response is successful
                 city.querySelector('figcaption').innerHTML = data.name; // Display city name
                 city.querySelector('img').src = `https://flagsapi.com/${data.sys.country}/shiny/32.png`; // Display country flag
@@ -51,16 +54,13 @@ const searchWeather = (query) => {
 
                 // Change background based on cloud percentage
                 changeBackground(data.clouds.all);
-            } else {
-                // Handle API response errors
-                handleError(data.message);
             }
             valueSearch.value = ''; // Clear the input field
         })
         .catch(error => {
             // Handle network or other fetch-related errors
             console.error('Error fetching weather data:', error);
-            handleError('Unable to fetch weather data.');
+            handleError(error.message); // Display error message in an alert
         });
 };
 
@@ -81,14 +81,9 @@ const changeBackground = (cloudPercentage) => {
     }
 };
 
-// Function to handle errors and display messages to the user
+// Function to handle errors and display messages to the user via alert
 const handleError = (message) => {
-    main.classList.add('error'); // Add error styling to the main container
-    main.innerText = message; // Display the error message in the main container
-    setTimeout(() => {
-        main.classList.remove('error'); // Remove error styling after a timeout
-        main.innerText = ''; // Clear the error message
-    }, 3000); // Error message is visible for 3 seconds
+    alert(message); // Display the error message in an alert box
 };
 
 // Function to initialize the app with a default city
